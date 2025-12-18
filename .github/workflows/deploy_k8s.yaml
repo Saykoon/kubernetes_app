@@ -20,18 +20,18 @@ jobs:
       - name: Set up gcloud
         uses: google-github-actions/setup-gcloud@v2
         with:
-          project_id: ${{ secrets.PROJECT_NAME }}
+          project_id: peak-vista-478015-f6
     
       - name: Build Docker image
         run: |
-          docker build -t ${{ secrets.REPOSITORY_URL }}:latest .
+          docker build -t us-central1-docker.pkg.dev/peak-vista-478015-f6/uwb/uwb-app:latest .
     
       - name: Configure Docker for Artifact Registry
-        run: gcloud auth configure-docker ${{ secrets.REPOSITORY_LOCATION }}-docker.pkg.dev
+        run: gcloud auth configure-docker us-central1-docker.pkg.dev
     
       - name: Push image
         run: |
-          docker push ${{ secrets.REPOSITORY_URL }}:latest
+          docker push us-central1-docker.pkg.dev/peak-vista-478015-f6/uwb/uwb-app:latest
 
       - name: Update app files
         uses: appleboy/scp-action@v0.1.5

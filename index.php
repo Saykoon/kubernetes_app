@@ -141,7 +141,7 @@
 
         <div class="footer">
             <p>Deployed via GitHub Actions | GCP Artifact Registry | Kubernetes</p>
-            <p>Project: hopeful-keep-480204-e0</p>
+            <p>Project: peak-vista-478015-f6</p>
         </div>
     </div>
 </body>

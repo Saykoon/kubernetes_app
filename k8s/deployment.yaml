@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: uwb-app
-          image: us-central1-docker.pkg.dev/hopeful-keep-480204-e0/uwb/uwb-app:latest
+          image: us-central1-docker.pkg.dev/peak-vista-478015-f6/uwb/uwb-app:latest
           ports:
             - containerPort: 80
           imagePullPolicy: Always
