@@ -1,0 +1,63 @@
+name: Deploy to Kubernetes
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.GCP_AUTH_KEY }}
+      
+      - name: Set up gcloud
+        uses: google-github-actions/setup-gcloud@v2
+        with:
+          project_id: ${{ secrets.PROJECT_NAME }}
+    
+      - name: Build Docker image
+        run: |
+          docker build -t ${{ secrets.REPOSITORY_URL }}:latest .
+    
+      - name: Configure Docker for Artifact Registry
+        run: gcloud auth configure-docker ${{ secrets.REPOSITORY_LOCATION }}-docker.pkg.dev
+    
+      - name: Push image
+        run: |
+          docker push ${{ secrets.REPOSITORY_URL }}:latest
+
+      - name: Update app files
+        uses: appleboy/scp-action@v0.1.5
+        with:
+            host: ${{ secrets.SERVER_HOST }}
+            username: ${{ secrets.SSH_USER }}
+            key: ${{ secrets.SSH_KEY }}
+            passphrase: ${{ secrets.SSH_PASSPHRASE }}
+            source: "k8s/*"
+            target: "~/app/"
+      
+      - name: SSH into VM and deploy
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_KEY }}
+          passphrase: ${{ secrets.SSH_PASSPHRASE }}
+          script: |
+            export KUBECONFIG=/home/${{ secrets.SSH_USER }}/.kube/config
+      
+            echo "Checking Kubernetes cluster..."
+            kubectl cluster-info
+            kubectl get nodes
+      
+            cd ~/app
+            kubectl apply -f k8s/deployment.yaml --validate=false
+            kubectl apply -f k8s/service.yaml --validate=false
+            kubectl rollout status deployment/uwb-app --timeout=120s

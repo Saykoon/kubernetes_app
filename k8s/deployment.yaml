@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: uwb-app
+  labels:
+    app: uwb-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: uwb-app
+  template:
+    metadata:
+      labels:
+        app: uwb-app
+    spec:
+      containers:
+        - name: uwb-app
+          image: us-central1-docker.pkg.dev/hopeful-keep-480204-e0/uwb/uwb-app:latest
+          ports:
+            - containerPort: 80
+          imagePullPolicy: Always
+      imagePullSecrets:
+        - name: regcred
