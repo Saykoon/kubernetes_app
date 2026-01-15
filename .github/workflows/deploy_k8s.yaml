@@ -12,16 +12,13 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
       
-      - name: Authenticate to Google Cloud
-        uses: google-github-actions/auth@v2
-        with:
-          credentials_json: ${{ secrets.GCP_AUTH_KEY }}
-      
-      - name: Set up gcloud
-        uses: google-github-actions/setup-gcloud@v2
-    
-      - name: Configure gcloud project
+      - name: Create credentials file
         run: |
+          echo '${{ secrets.GCP_AUTH_KEY }}' > /tmp/gcp-key.json
+      
+      - name: Authenticate to Google Cloud
+        run: |
+          gcloud auth activate-service-account --key-file=/tmp/gcp-key.json
           gcloud config set project hopeful-keep-480204-e0
           gcloud auth configure-docker us-central1-docker.pkg.dev --quiet
     
