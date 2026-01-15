@@ -22,16 +22,16 @@ jobs:
     
       - name: Configure gcloud project
         run: |
-          gcloud config set project peak-vista-478015-f6
+          gcloud config set project hopeful-keep-480204-e0
           gcloud auth configure-docker us-central1-docker.pkg.dev --quiet
     
       - name: Build Docker image
         run: |
-          docker build -t us-central1-docker.pkg.dev/peak-vista-478015-f6/uwb/uwb-app:latest .
+          docker build -t us-central1-docker.pkg.dev/hopeful-keep-480204-e0/uwb/uwb-app:latest .
     
       - name: Push image
         run: |
-          docker push us-central1-docker.pkg.dev/peak-vista-478015-f6/uwb/uwb-app:latest
+          docker push us-central1-docker.pkg.dev/hopeful-keep-480204-e0/uwb/uwb-app:latest
 
       - name: Update app files
         uses: appleboy/scp-action@v0.1.5
